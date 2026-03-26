@@ -45,7 +45,10 @@ app.get(
       { expiresIn: "1h" },
     );
     // Send the token to the client
-    res.json({ token });
+    res.json({ 
+        message:"Authentication successful",
+        token
+     });
   },
 );
 
