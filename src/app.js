@@ -25,6 +25,12 @@ passport.use(
   ),
 );
 
+// Route to initiate Google OAuth flow
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] }),
+);
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
