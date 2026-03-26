@@ -3,6 +3,8 @@ require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const express = require("express");
 const passport = require("passport");
 const { Strategy: GoogleStrategy } = require("passport-google-oauth20");
+const jwt = require("jsonwebtoken");
+
 
 
 const app = express();
@@ -29,6 +31,22 @@ passport.use(
 app.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"] }),
+);
+
+// Callback route that Google will redirect to after authentication
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { session: false }),
+  (req, res) => {
+    // Generate a JWT for the authenticated user
+    const token = jwt.sign(
+      { id: req.user.id, displayName: req.user.displayName },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" },
+    );
+    // Send the token to the client
+    res.json({ token });
+  },
 );
 
 app.listen(3000, () => {
